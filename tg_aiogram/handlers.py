@@ -1,14 +1,18 @@
-from aiogram import types, F, Router
+from aiogram import Router,types,F,Bot
 from aiogram.types import Message
-from aiogram.filters import Command
+from aiogram.filters import Command, CommandStart
 
 router = Router()
 
-@router.message(Command("start"))
-async def start_handler(msg: Message):
-    await msg.answer("Привет! Я помогу тебе узнать твой ID, просто отправь мне любое сообщение")
+chat_id = 1489684112
 
-
-@router.message()
-async def message_handler(msg: Message):
-    await msg.answer(f"Твой ID: {msg.from_user.id}")
+@router.message(Command('start'))
+async def start_command(message:Message,bot:Bot):
+    await message.answer(f"Пишите мне, как писали бы Паше:")
+    @router.message()
+    async def talk_command(message:Message,bot:Bot):
+        if message.text == '/cancel':
+            await message.answer(f'Вы вышли из режима прослушки. Нет')
+        else:
+            await message.answer(f'Сообщение от {message.from_user.full_name} chat_id:{message.chat.id}:')
+            await bot.forward_message(chat_id,message.chat.id,message.message_id)

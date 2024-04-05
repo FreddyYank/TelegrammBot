@@ -18,12 +18,23 @@ async def start(message: types.Message):
 
 @dp.message(Command('git'))
 async def git_name(message: types.Message):
-    a = message.text.split(' ')
-    response = req.get(f"https://api.github.com/users/{a[1]}").json()
-    list = []
+    login = message.text.split(' ')
+    response = req.get(f"https://api.github.com/users/{login[1]}").json()
+    dicte = {}
     for i in response:
-        await message.answer(i + ":", response[f'{i}'])
-
+        b = response[f'{i}']
+        #await message.answer(i + ":", response[f'{i}'])
+        dicte[i] = b
+    try:
+        await message.answer(f"LOGIN: {dicte['login']}\n"
+                             f"ID: {dicte['id']}\n"
+                             f"NODE_ID: {dicte['node_id']}\n"
+                             f"AVATAR_URL: {dicte['avatar_url']}\n"
+                             #f"gravatar_id: {dicte['gravatar_id']}\n"
+                             #f"url: {dicte['url']}\n"
+                             f"HTML_URL: {dicte['html_url']}")
+    except KeyError:
+        await message.reply(f'Пользователя с логином \"{login[1]}\" не существует')
 
 
 
